@@ -18,7 +18,7 @@ def clean_tweet(tweet):
     tweet = re.sub('((www\.[^\s]+)|(https?://[^\s]+))',' ',tweet)
     tweet = re.sub('@[^\s]+',' ',tweet)
     tweet = re.sub(r'\d+','',tweet)
-    tweet = re.sub('[!,?,:,.,;,/,$,%,^,*,"]+',' ',tweet)
+    tweet = re.sub('[!,?,:,.,;,/,$,%,^,*,),(,_"]+',' ',tweet)
     tweet = re.sub('[\s]+', ' ', tweet)
     tweet = re.sub('&amp', ' ', tweet)
     tweet = re.sub('&gt', ' ', tweet)
