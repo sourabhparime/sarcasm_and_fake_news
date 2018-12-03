@@ -56,16 +56,22 @@ def get_accuracy(sar, non_sar, test_tweets):
             features['contains('+str(word)+')'] = (word in doc_words)
         return features
 
-    bigram_feature_vectors = get_bigram_features(sar, non_sar)
-    #bigram_feature_vectors = get_unigram_features(sar, non_sar)
+    #bigram_feature_vectors = get_bigram_features(sar, non_sar)
+    bigram_feature_vectors = get_unigram_features(sar, non_sar)
     #print(bigram_feature_vectors)
     word_features = get_word_features(bigram_feature_vectors)
-    print(sar)
+    #print(sar)
     training_set = nltk.classify.apply_features(extract_feature, bigram_feature_vectors)
 
     classifier = nltk.NaiveBayesClassifier.train(training_set)
     print(classifier.show_most_informative_features(32))
-    print(classifier.classify(extract_feature("tell us more about how sexism is wrong gopdebate".split())))
+    preds = []
+    for tweet in test_tweets:
+        if classifier.classify(extract_feature(tweet.split())) == 'sarcastic':
+            preds.append(True)
+        else:
+            preds.append(False)
+    return preds
 
 
 
