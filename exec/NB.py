@@ -67,7 +67,7 @@ def get_accuracy(sar, non_sar, test_tweets):
     print(classifier.show_most_informative_features(32))
     preds = []
     for tweet in test_tweets:
-        if classifier.classify(extract_feature(tweet.split())) == 'sarcastic':
+        if classifier.classify(extract_feature(tweet[0].split())) == 'sarcastic':
             preds.append(True)
         else:
             preds.append(False)

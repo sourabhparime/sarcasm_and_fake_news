@@ -25,11 +25,16 @@ cleaned_df = clean_frame(read())
 cleaned_df.to_csv("cleaned.csv")
 X = cleaned_df['text']
 y = cleaned_df['is_sarcasm']
+ros = RandomOverSampler()
+X_r, y_r  = ros.fit_resample(np.array(X.values).reshape(-1, 1),np.array(y.values).reshape(-1, 1))
 
-X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.33,
+
+X_train, X_test, y_train, y_test = train_test_split(X_r,y_r, test_size=0.33,
  random_state=42)
 
-train_data = pd.concat([X_train, y_train], axis=1).reset_index()
+train_data = pd.concat([pd.DataFrame(X_train, columns=['text']),
+pd.DataFrame(y_train, columns=['is_sarcasm'])], axis=1).reset_index()
+#print(train_data, X_test)
 
 
 sar_tweets = []
@@ -41,7 +46,7 @@ for index, row in train_data.iterrows():
         sar_tweets.append((row['text'], 'not_sarcastic'))
 # call naive bayes model and print classification report
 y_pred = NB.get_accuracy(sar_tweets,nonosar_tweets, X_test )
-print(y_pred, list(y_test.values))
+#print(y_pred, y_test)
 y_true = []
 y_preds = []
 for val in y_test:
