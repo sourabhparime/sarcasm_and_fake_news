@@ -8,7 +8,7 @@ from imblearn.over_sampling import RandomOverSampler
 
 # Read the file and create a dict of tweets
 def read(path = '../data/Annnotated_Copy.xlsx'):
-    df = pd.read_excel(path, 'Sheet1')
+    df = pd.read_excel(path, 'Annotated')
     tweets = df[['tweet_id', 'text', 'is_sarcasm']]
     return tweets
 
