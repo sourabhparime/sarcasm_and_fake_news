@@ -1,13 +1,13 @@
 import pandas as pd 
 import numpy as np
 import codecs
-import pre, NB, SVM
+import pre, NB, SVM, congru
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from imblearn.over_sampling import RandomOverSampler
 
 # Read the file and create a dict of tweets
-def read(path = '../data/Annnotated_Copy.xlsx'):
+"""def read(path = '../data/Annnotated_Copy.xlsx'):
     df = pd.read_excel(path, 'Annotated')
     tweets = df[['tweet_id', 'text', 'is_sarcasm']]
     return tweets
@@ -37,16 +37,19 @@ pd.DataFrame(y_train, columns=['is_sarcasm'])], axis=1).reset_index()
 
 test_data = pd.concat([pd.DataFrame(X_test, columns=['text']),
 pd.DataFrame(y_test, columns=['is_sarcasm'])], axis=1).reset_index()
-#print(train_data, X_test)
-#print(train_data.head())
+train_data.to_csv("train.csv")
+test_data.to_csv("test.csv")
+print("saved")"""
+train_data = pd.read_csv("train.csv")
+test_data = pd.read_csv("test.csv")
 
-sar_tweets = []
-nonosar_tweets = []
-for index, row in train_data.iterrows():
-    if row['is_sarcasm'] == True:
-        sar_tweets.append((row['text'], 'sarcastic'))
-    else:
-        sar_tweets.append((row['text'], 'not_sarcastic'))
+#sar_tweets = []
+#nonosar_tweets = []
+#for index, row in train_data.iterrows():
+#    if row['is_sarcasm'] == True:
+#        sar_tweets.append((row['text'], 'sarcastic'))
+#    else:
+#        sar_tweets.append((row['text'], 'not_sarcastic'))
 # call naive bayes model and print classification report
 #y_pred = NB.get_accuracy(sar_tweets,nonosar_tweets, X_test )
 #print(y_pred, y_test)
@@ -60,6 +63,8 @@ for index, row in train_data.iterrows():
 #    else: y_preds.append(0)
 #print(classification_report(y_true, y_preds))
 
-print(SVM.get_accuracy(train_data, test_data )) 
+#print(SVM.get_accuracy(train_data, test_data ))
+congru.get_svm_explicit(train_data, test_data)
+congru.get_mnb_explicit(train_data, test_data)
 
 
