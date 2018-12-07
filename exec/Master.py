@@ -1,7 +1,7 @@
 import pandas as pd 
 import numpy as np
 import codecs
-import pre, NB
+import pre, NB, SVM
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from imblearn.over_sampling import RandomOverSampler
@@ -34,8 +34,11 @@ X_train, X_test, y_train, y_test = train_test_split(X_r,y_r, test_size=0.33,
 
 train_data = pd.concat([pd.DataFrame(X_train, columns=['text']),
 pd.DataFrame(y_train, columns=['is_sarcasm'])], axis=1).reset_index()
-#print(train_data, X_test)
 
+test_data = pd.concat([pd.DataFrame(X_test, columns=['text']),
+pd.DataFrame(y_test, columns=['is_sarcasm'])], axis=1).reset_index()
+#print(train_data, X_test)
+#print(train_data.head())
 
 sar_tweets = []
 nonosar_tweets = []
@@ -45,17 +48,18 @@ for index, row in train_data.iterrows():
     else:
         sar_tweets.append((row['text'], 'not_sarcastic'))
 # call naive bayes model and print classification report
-y_pred = NB.get_accuracy(sar_tweets,nonosar_tweets, X_test )
+#y_pred = NB.get_accuracy(sar_tweets,nonosar_tweets, X_test )
 #print(y_pred, y_test)
-y_true = []
-y_preds = []
-for val in y_test:
-    if val == True: y_true.append(1)
-    else: y_true.append(0)
-for val in y_pred:
-    if val == True: y_preds.append(1)
-    else: y_preds.append(0)
-print(classification_report(y_true, y_preds))
- 
+#y_true = []
+#y_preds = []
+#for val in y_test:
+#    if val == True: y_true.append(1)
+#    else: y_true.append(0)
+#for val in y_pred:
+#    if val == True: y_preds.append(1)
+#    else: y_preds.append(0)
+#print(classification_report(y_true, y_preds))
+
+print(SVM.get_accuracy(train_data, test_data )) 
 
 
