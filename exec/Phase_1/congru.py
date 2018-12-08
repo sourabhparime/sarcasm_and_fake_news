@@ -8,6 +8,7 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.preprocessing import FunctionTransformer
 import congruency_features as congo
+import intense_features as intense
 import utils
 
 
@@ -44,6 +45,18 @@ def get_svm_explicit(train, test):
         ])),
         ('sentiment_flips', Pipeline([
             ('count', FunctionTransformer(congo.get_sentiment_flip, validate=False)),
+        ])),
+        ('strong_affs', Pipeline([
+            ('count', FunctionTransformer(intense.get_strong_affs, validate=False)),
+        ])),
+        ('strong_negs', Pipeline([
+            ('count', FunctionTransformer(intense.get_strong_negs, validate=False)),
+        ])),
+        ('strong_inter', Pipeline([
+            ('count', FunctionTransformer(intense.get_strong_inter, validate=False)),
+        ])),
+        ('strong_intense', Pipeline([
+            ('count', FunctionTransformer(intense.get_strong_intense, validate=False)),
         ]))
     ])),
     ('clf', OneVsRestClassifier(svm.SVC(gamma=0.01, C=100., probability=True, class_weight='balanced', kernel='rbf')))])
@@ -82,6 +95,18 @@ def get_mnb_explicit(train, test):
         ])),
         ('sentiment_flips', Pipeline([
             ('count', FunctionTransformer(congo.get_sentiment_flip, validate=False)),
+        ])),
+        ('strong_affs', Pipeline([
+            ('count', FunctionTransformer(intense.get_strong_affs, validate=False)),
+        ])),
+        ('strong_negs', Pipeline([
+            ('count', FunctionTransformer(intense.get_strong_negs, validate=False)),
+        ])),
+        ('strong_inter', Pipeline([
+            ('count', FunctionTransformer(intense.get_strong_inter, validate=False)),
+        ])),
+        ('strong_intense', Pipeline([
+            ('count', FunctionTransformer(intense.get_strong_intense, validate=False)),
         ]))
     ])),
     ('clf', MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True))])

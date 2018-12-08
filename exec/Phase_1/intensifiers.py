@@ -17,3 +17,5 @@ intensifiers = ["amazingly", "astoundingly", "awful", "bare", "bloody", "crazy",
                 "really", "remarkably", "right", "sick", "strikingly", "super", "supremely",
                 "surprisingly", "terribly", "terrifically", "too", "totally", "uncommonly",
                 "unusually", "veritable", "very", "wicked"]
+
+
