@@ -18,11 +18,9 @@ def print_statistics(y, y_pred):
     print(metrics.classification_report(y, y_pred))
     return accuracy, precision, recall, f_score
 
-def mislabelled_data_points(x_test, y_test, y_pred, model):
+def mislabelled_data_points(x_test, y_test, y_pred):
     for i in range(len(x_test)):
-        num = np.argmax(y_pred[i])
-        with open(model+".txt", "w") as f:
-                
-            if num != y_test[1]:
-                f.write('Expected:'+ y_test[i] +' but predicted ' + str(num) + x_test[i] + "\n")
-                #print(x_test[i])
+        num = y_pred[i]
+        if num != y_test[i]:
+            print('Expected:', y_test[i], ' but predicted ', num)
+            print(x_test[i])

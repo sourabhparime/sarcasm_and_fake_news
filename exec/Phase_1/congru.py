@@ -65,7 +65,7 @@ def get_svm_explicit(train, test):
     y_pred =  classifier.predict(x_test)
     utils.print_model_name("SVM with Congruency Features")
     utils.print_statistics(y_test, y_pred)
-    utils.mislabelled_data_points(x_test, y_test, y_pred, "svm")
+    utils.mislabelled_data_points(x_test, y_test, y_pred)
 
 def get_mnb_explicit(train, test):
 
@@ -115,4 +115,4 @@ def get_mnb_explicit(train, test):
     y_pred =  classifier.predict(x_test)
     utils.print_model_name("Multinomial Naive Bayes with Congruency Features")
     utils.print_statistics(y_test, y_pred)
-    utils.mislabelled_data_points(x_test, y_test, y_pred, "mnb")
+    utils.mislabelled_data_points(x_test, y_test, y_pred)
