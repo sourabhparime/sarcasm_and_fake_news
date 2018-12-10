@@ -9,7 +9,7 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.preprocessing import FunctionTransformer
 import congruency_features as congo
 import intense_features as intense
-import utils
+import utils_1 as utils
 
 
 
@@ -59,13 +59,14 @@ def get_svm_explicit(train, test):
             ('count', FunctionTransformer(intense.get_strong_intense, validate=False)),
         ]))
     ])),
-    ('clf', OneVsRestClassifier(svm.SVC(gamma=0.01, C=100., probability=True, class_weight='balanced', kernel='rbf')))])
+    ('clf', OneVsRestClassifier(svm.SVC(gamma=0.01, C=1000, probability=True, class_weight='balanced', kernel='rbf')))])
 
     classifier.fit(x_train, y_train)
     y_pred =  classifier.predict(x_test)
     utils.print_model_name("SVM with Congruency Features")
     utils.print_statistics(y_test, y_pred)
-    utils.mislabelled_data_points(x_test, y_test, y_pred)
+    #utils.mislabelled_data_points(x_test, y_test, y_pred)
+    return y_pred
 
 def get_mnb_explicit(train, test):
 
@@ -115,4 +116,5 @@ def get_mnb_explicit(train, test):
     y_pred =  classifier.predict(x_test)
     utils.print_model_name("Multinomial Naive Bayes with Congruency Features")
     utils.print_statistics(y_test, y_pred)
-    utils.mislabelled_data_points(x_test, y_test, y_pred)
+    #utils.mislabelled_data_points(x_test, y_test, y_pred)
+    return y_pred

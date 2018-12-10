@@ -4,12 +4,14 @@ import codecs
 import pre, NB, SVM, congru
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+import os
 from imblearn.over_sampling import RandomOverSampler
+import utils_1 as utils
 
 # Read the file and create a dict of tweets
-"""def read(path = '../data/Annnotated_Copy.xlsx'):
+def read(path = '../data/Annnotated_Copy.xlsx'):
     df = pd.read_excel(path, 'Annotated')
-    tweets = df[['tweet_id', 'text', 'is_sarcasm']]
+    tweets = df[['tweet_id', 'text', 'is_sarcasm','is_fake_news']]
     return tweets
 
 def clean_frame(tweets):
@@ -20,51 +22,46 @@ def clean_frame(tweets):
     #tweets['text'] = tweets['text'].apply(pre.remove_stops)
     return tweets
 
-cleaned_df = clean_frame(read())
-# save the cleaned df
-cleaned_df.to_csv("cleaned.csv")
-X = cleaned_df['text']
-y = cleaned_df['is_sarcasm']
-ros = RandomOverSampler()
-X_r, y_r  = ros.fit_resample(np.array(X.values).reshape(-1, 1),np.array(y.values).reshape(-1, 1))
+def random_over_sample(df):
+    X = df[['text','is_fake_news']]
+    y = df['is_sarcasm']
+    print(X.shape, y.shape)
+    ros = RandomOverSampler()
+    X_r, y_r  = ros.fit_resample(np.array(X.values),np.array(y.values).reshape(-1, 1))
+    X_train, X_test, y_train, y_test = train_test_split(X_r,y_r, test_size=0.30, random_state=42)
+    
+    y_test_fake = pd.DataFrame(X_test[:,1:2], columns=["is_fake_news"])
+    X_test = X_test[:,:1]
+    X_train = X_train[: , :1]
+    
+    
+    train_data = pd.concat([pd.DataFrame(X_train, columns=['text']),
+    pd.DataFrame(y_train, columns=['is_sarcasm'])], axis=1).reset_index()
 
+    test_data = pd.concat([pd.DataFrame(X_test, columns=['text']),
+    pd.DataFrame(y_test, columns=['is_sarcasm'])], axis=1).reset_index()
 
-X_train, X_test, y_train, y_test = train_test_split(X_r,y_r, test_size=0.33,
- random_state=42)
+    train_data.to_csv("train.csv")
+    test_data.to_csv("test.csv")
+    y_test_fake.to_csv("fake_test.csv")
 
-train_data = pd.concat([pd.DataFrame(X_train, columns=['text']),
-pd.DataFrame(y_train, columns=['is_sarcasm'])], axis=1).reset_index()
+    return train_data.copy(), test_data.copy()
+files = os.listdir('.')
 
-test_data = pd.concat([pd.DataFrame(X_test, columns=['text']),
-pd.DataFrame(y_test, columns=['is_sarcasm'])], axis=1).reset_index()
-train_data.to_csv("train.csv")
-test_data.to_csv("test.csv")
-print("saved")"""
-train_data = pd.read_csv("train.csv")
-test_data = pd.read_csv("test.csv")
+if "train.csv" not in files and "test.csv" not in files:
+    random_over_sample(clean_frame(read()))
 
-#sar_tweets = []
-#nonosar_tweets = []
-#for index, row in train_data.iterrows():
-#    if row['is_sarcasm'] == True:
-#        sar_tweets.append((row['text'], 'sarcastic'))
-#    else:
-#        sar_tweets.append((row['text'], 'not_sarcastic'))
-# call naive bayes model and print classification report
-#y_pred = NB.get_accuracy(sar_tweets,nonosar_tweets, X_test )
-#print(y_pred, y_test)
-#y_true = []
-#y_preds = []
-#for val in y_test:
-#    if val == True: y_true.append(1)
-#    else: y_true.append(0)
-#for val in y_pred:
-#    if val == True: y_preds.append(1)
-#    else: y_preds.append(0)
-#print(classification_report(y_true, y_preds))
+train, test = pd.read_csv("train.csv"), pd.read_csv("test.csv")
 
-#print(SVM.get_accuracy(train_data, test_data ))
-congru.get_svm_explicit(train_data, test_data)
-congru.get_mnb_explicit(train_data, test_data)
+y_pred_svm = congru.get_svm_explicit(train, test)
+y_pred_mnb = congru.get_mnb_explicit(train, test)
 
+svm_pred = pd.DataFrame(y_pred_svm, columns=['is_sarcasm'])
+mnb_pred = pd.DataFrame(y_pred_mnb, columns=['is_sarcasm'])
 
+y_fake = pd.read_csv("fake_test.csv")
+utils.print_contingency_table(pd.concat([y_fake,svm_pred], axis = 1), "svm")
+utils.print_contingency_table(pd.concat([y_fake,mnb_pred], axis = 1), "mnb")
+
+utils.print_phi_inflated(pd.concat([y_fake,svm_pred], axis = 1), "svm")
+utils.print_phi_inflated(pd.concat([y_fake,mnb_pred], axis = 1), "mnb")
