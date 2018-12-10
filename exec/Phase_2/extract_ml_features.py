@@ -118,6 +118,8 @@ def get_sentiment_features(tweet, tweet_tokens, tweet_pos, emoji_sent_dict, subj
 
     # Obtain average of all sentiment words (pos, ne, obj) using SentiWordNet Interface
     pos_translation = {'N': 'n', 'V': 'v', 'D': 'a', 'R': 'r'}
+    #ind = min(len(tweet_tokens), len(tweet_pos))
+    # changed from len(tweet_tokens) to min in below
     for index in range(len(tweet_tokens)):
         lemmatized = lemmatizer.lemmatize(tweet_tokens[index], 'v')
         if tweet_pos[index] in pos_translation:
